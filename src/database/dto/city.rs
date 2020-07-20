@@ -36,18 +36,16 @@ impl EntityHandler<MysqlConnection, City> for CitiesHandler<MysqlConnection> {
 
     fn select(&self) -> Vec<City> {
         use super::super::schema::city::dsl::*;
-        let results = city.
+        city.
             load::<City>(&self.connection)
-            .expect("Failed to retrieve all data");
-        results
+            .expect("Failed to retrieve all data")
     }
 
     fn select_by_id(&self, idp: i32) -> Vec<City> {
         use super::super::schema::city::dsl::*;
-        let results: Vec<City> = city.
+        city.
             filter(id.eq(idp))
             .load::<City>(&self.connection)
-            .expect(format!("Failed to retrieve country {}", idp).as_str());
-        results
+            .expect(format!("Failed to retrieve country {}", idp).as_str())
     }
 }

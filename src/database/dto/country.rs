@@ -30,18 +30,16 @@ impl EntityHandler<MysqlConnection, Country> for CountriesHandler<MysqlConnectio
 
     fn select(&self) -> Vec<Country> {
         use super::super::schema::country::dsl::*;
-        let results = country.
+        country.
             load::<Country>(&self.connection)
-            .expect("Failed to retrieve all data");
-        results
+            .expect("Failed to retrieve all data")
     }
 
     fn select_by_id(&self, idp: i32) -> Vec<Country> {
         use super::super::schema::country::dsl::*;
-        let results: Vec<Country> = country.
+        country.
             filter(id.eq(idp))
             .load::<Country>(&self.connection)
-            .expect(format!("Failed to retrieve country {}", idp).as_str());
-        results
+            .unwrap_or_else(|_| panic!("Failed to retrieve country {}", idp))
     }
 }

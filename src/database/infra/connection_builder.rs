@@ -22,6 +22,6 @@ impl MySQLConnectionBuilder {
 impl SQLConnectionBuilder<MysqlConnection> for MySQLConnectionBuilder {
     fn create_connexion(&self) -> MysqlConnection {
         MysqlConnection::establish(&self.url)
-            .expect(&format!("Error connecting to {}", self.url))
+            .unwrap_or_else(|_| panic!("Error connecting to {}", self.url))
     }
 }
