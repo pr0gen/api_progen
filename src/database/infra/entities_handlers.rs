@@ -1,5 +1,5 @@
-use diesel::prelude::*;
 use crate::database::dto::Dto;
+use diesel::prelude::*;
 
 pub trait EntityHandler<C: Connection, D: Dto> {
     fn new(connection: C) -> Self;

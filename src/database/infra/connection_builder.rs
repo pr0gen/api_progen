@@ -6,7 +6,7 @@ pub trait SQLConnectionBuilder<C: Connection> {
 }
 
 pub struct MySQLConnectionBuilder {
-    url: String
+    url: String,
 }
 
 impl MySQLConnectionBuilder {
@@ -15,7 +15,16 @@ impl MySQLConnectionBuilder {
     }
 
     pub fn from_fields(username: String, password: String, host: String, name: String) -> Self {
-        MySQLConnectionBuilder { url: format!("{}://{}:{}@{}/{}", String::from("mysql"), username, password, host, name) }
+        MySQLConnectionBuilder {
+            url: format!(
+                "{}://{}:{}@{}/{}",
+                String::from("mysql"),
+                username,
+                password,
+                host,
+                name
+            ),
+        }
     }
 }
 
@@ -25,3 +34,4 @@ impl SQLConnectionBuilder<MysqlConnection> for MySQLConnectionBuilder {
             .unwrap_or_else(|_| panic!("Error connecting to {}", self.url))
     }
 }
+

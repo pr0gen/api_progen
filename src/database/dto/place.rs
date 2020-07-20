@@ -1,10 +1,9 @@
-use serde::{Serialize, Deserialize};
-use diesel::{Queryable, Connection, MysqlConnection};
 use crate::database::dto::Dto;
-use chrono::NaiveDateTime;
 use crate::database::infra::entities_handlers::EntityHandler;
+use chrono::NaiveDateTime;
 use diesel::prelude::*;
-
+use diesel::{Connection, MysqlConnection, Queryable};
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Queryable, Deserialize)]
 pub struct Place {
@@ -17,13 +16,20 @@ pub struct Place {
 }
 
 pub struct PlacesHandler<C: Connection> {
-    connection: C
+    connection: C,
 }
 
 impl Dto for Place {}
 
 impl Place {
-    pub fn new(id: i32, longitude: f32, latitude: f32, city_id: i32, created_at: NaiveDateTime, updated_at: NaiveDateTime) -> Self {
+    pub fn new(
+        id: i32,
+        longitude: f32,
+        latitude: f32,
+        city_id: i32,
+        created_at: NaiveDateTime,
+        updated_at: NaiveDateTime,
+    ) -> Self {
         Place {
             id,
             longitude,
@@ -42,16 +48,17 @@ impl EntityHandler<MysqlConnection, Place> for PlacesHandler<MysqlConnection> {
 
     fn select(&self) -> Vec<Place> {
         use super::super::schema::place::dsl::*;
-        place.
-            load::<Place>(&self.connection)
+        place
+            .load::<Place>(&self.connection)
             .expect("Failed to retrieve all data")
     }
 
     fn select_by_id(&self, idp: i32) -> Vec<Place> {
         use super::super::schema::place::dsl::*;
-        place.
-            filter(id.eq(idp))
+        place
+            .filter(id.eq(idp))
             .load::<Place>(&self.connection)
             .unwrap_or_else(|_| panic!("Failed to retrieve place {}", idp))
     }
 }
+

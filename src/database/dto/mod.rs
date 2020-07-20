@@ -1,5 +1,6 @@
-pub mod place;
 pub mod city;
 pub mod country;
+pub mod place;
 
-pub trait Dto{}
+pub trait Dto {}
+

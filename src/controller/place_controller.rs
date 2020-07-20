@@ -1,13 +1,11 @@
-use rocket_contrib::json::Json;
 use crate::database::dto::place::Place;
-use crate::database::infra::connection_builder::{MySQLConnectionBuilder, SQLConnectionBuilder};
 use crate::database::dto::place::PlacesHandler;
+use crate::database::infra::connection_builder::{MySQLConnectionBuilder, SQLConnectionBuilder};
 use crate::database::infra::entities_handlers::EntityHandler;
-
+use rocket_contrib::json::Json;
 
 use dotenv::dotenv;
 use std::env;
-
 
 #[get("/parking")]
 pub fn parking() -> Json<Vec<Place>> {
@@ -18,3 +16,4 @@ pub fn parking() -> Json<Vec<Place>> {
     let place_handler = PlacesHandler::new(connection_builder.create_connexion());
     Json(place_handler.select())
 }
+
