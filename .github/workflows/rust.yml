@@ -1,48 +1,77 @@
-name: Rust
+on: [push, pull_request]
 
-on:
-  [ push, pull_request ]
-
-env:
-  CARGO_TERM_COLOR: always
+name: ApiProgen
 
 jobs:
-  test:
-    name: "${{ matrix.os.name }} ${{ matrix.test.name }}"
-
-    strategy:
-      matrix:
-        os:
-          - name: Linux
-            distro: ubuntu-latest
-          - name: Windows
-            distro: windows-latest
-          - name: macOS
-            distro: macOS-latest
-        toolchain:
-          - nightly
-        test:
-          - name: Debug
-            flag:
-          - name: Release
-            flag: "--release"
-          - name: Core
-            flag: "--core"
-          - name: Contrib
-            flag: "--contrib"
-     
-  build:
+  clippy:
+    name: Clippy
     runs-on: ubuntu-latest
-
     steps:
-    - name: Install Rust
-      uses: actions-rs/toolchain@v1
-      with:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+
+      - name: Install nightly toolchain with clippy available
+        uses: actions-rs/toolchain@v1
+        with:
           profile: minimal
-          toolchain: ${{ matrix.toolchain }}
+          toolchain: nightly
           override: true
-    - uses: actions/checkout@v2
-    - name: Build
-      run: cargo build --verbose
-    - name: Run tests
-      run: cargo test --verbose
+          components: clippy
+
+      - name: Run cargo clippy
+        uses: actions-rs/cargo@v1
+        continue-on-error: false
+        with:
+          command: clippy
+          args: -- -D warnings
+
+  rustfmt:
+    name: Format
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+
+      - name: Install nightly toolchain with rustfmt available
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: nightly
+          override: true
+          components: rustfmt
+
+      - name: Run cargo fmt
+        uses: actions-rs/cargo@v1
+        continue-on-error: false
+        with:
+          command: fmt
+          args: --all -- --check
+
+  combo:
+    name: Clippy + rustfmt
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+
+      - name: Install nightly toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: nightly
+          override: true
+          components: rustfmt, clippy
+
+      - name: Run cargo fmt
+        uses: actions-rs/cargo@v1
+        continue-on-error: false
+        with:
+          command: fmt
+          args: --all -- --check
+
+      - name: Run cargo clippy
+        uses: actions-rs/cargo@v1
+        continue-on-error: false
+        with:
+          command: clippy
+          args: -- -D warnings
