@@ -1,0 +1,49 @@
+[package]
+name = "api_progen"
+version = "0.1.0"
+authors = ["Rolfie <tigran.slama@laposte.net>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies.rocket]
+version = "0.4.4"
+
+[dependencies.serde]
+version = "1.0.110"
+features = ["derive"]
+
+[dependencies.serde_json]
+version= "1.0.53"
+
+[dependencies.rocket_contrib]
+version = "0.4.4"
+default-features = false
+features = ["json"]
+
+[dependencies.shaku_rocket]
+version = "0.3.1"
+
+[dependencies.chrono]
+version = "0.4.0"
+features = ["serde"]
+
+[dependencies.time]
+version = "0.2.16"
+
+[dependencies.mysql]
+version = "18.2.0"
+
+[dependencies.diesel]
+version = "1.4.4"
+features = ["mysql", "chrono"]
+dotenv = "0.10"
+
+[dependencies.openssl]
+version = "0.10.29"
+
+[dependencies.openssl-sys]
+version = "0.9.56"
+
+[dependencies.dotenv]
+version = "0.15.0"
