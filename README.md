@@ -11,6 +11,10 @@ mysql
 
 `sudo apt-get install default-libmysqlclient-dev`
 
+Rust version nightly 
+
+`rustup default nightly`
+
 install diesel
 
 `cargo install diesel_cli --no-default-features --features mysql`
