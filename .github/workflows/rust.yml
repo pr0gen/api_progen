@@ -1,20 +1,46 @@
 name: Rust
 
 on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+  [ push, pull_request ]
 
 env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build:
+  test:
+    name: "${{ matrix.os.name }} ${{ matrix.test.name }}"
 
+    strategy:
+      matrix:
+        os:
+          - name: Linux
+            distro: ubuntu-latest
+          - name: Windows
+            distro: windows-latest
+          - name: macOS
+            distro: macOS-latest
+        toolchain:
+          - nightly
+        test:
+          - name: Debug
+            flag:
+          - name: Release
+            flag: "--release"
+          - name: Core
+            flag: "--core"
+          - name: Contrib
+            flag: "--contrib"
+     
+  build:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Install Rust
+      uses: actions-rs/toolchain@v1
+      with:
+          profile: minimal
+          toolchain: ${{ matrix.toolchain }}
+          override: true
     - uses: actions/checkout@v2
     - name: Build
       run: cargo build --verbose
