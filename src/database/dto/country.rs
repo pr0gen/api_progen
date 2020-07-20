@@ -19,18 +19,13 @@ impl Dto for Country {}
 
 impl Country {
     pub fn new(id: i32, name: String) -> Self {
-        return Country {
-            id,
-            name,
-        };
+        Country {id, name}
     }
 }
 
 impl EntityHandler<MysqlConnection, Country> for CountriesHandler<MysqlConnection> {
     fn new(connection: MysqlConnection) -> Self {
-        return CountriesHandler {
-            connection
-        };
+        CountriesHandler {connection}
     }
 
     fn select(&self) -> Vec<Country> {
@@ -38,7 +33,7 @@ impl EntityHandler<MysqlConnection, Country> for CountriesHandler<MysqlConnectio
         let results = country.
             load::<Country>(&self.connection)
             .expect("Failed to retrieve all data");
-        return results;
+        results
     }
 
     fn select_by_id(&self, idp: i32) -> Vec<Country> {
@@ -47,6 +42,6 @@ impl EntityHandler<MysqlConnection, Country> for CountriesHandler<MysqlConnectio
             filter(id.eq(idp))
             .load::<Country>(&self.connection)
             .expect(format!("Failed to retrieve country {}", idp).as_str());
-        return results;
+        results
     }
 }

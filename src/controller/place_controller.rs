@@ -1,5 +1,4 @@
 use rocket_contrib::json::Json;
-use crate::service::random_service::RandomCityService;
 use crate::database::dto::place::Place;
 use crate::database::infra::connection_builder::{MySQLConnectionBuilder, SQLConnectionBuilder};
 use crate::database::dto::place::PlacesHandler;
@@ -17,5 +16,5 @@ pub fn parking() -> Json<Vec<Place>> {
     let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
     let connection_builder = MySQLConnectionBuilder::new(database_url);
     let place_handler = PlacesHandler::new(connection_builder.create_connexion());
-    return Json(place_handler.select());
+    Json(place_handler.select())
 }

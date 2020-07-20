@@ -11,21 +11,17 @@ pub struct MySQLConnectionBuilder {
 
 impl MySQLConnectionBuilder {
     pub fn new(url: String) -> Self {
-        return MySQLConnectionBuilder {
-            url
-        };
+        MySQLConnectionBuilder { url }
     }
 
     pub fn from_fields(username: String, password: String, host: String, name: String) -> Self {
-        return MySQLConnectionBuilder {
-            url: format!("{}://{}:{}@{}/{}", String::from("mysql"), username, password, host, name)
-        };
+        MySQLConnectionBuilder { url: format!("{}://{}:{}@{}/{}", String::from("mysql"), username, password, host, name) }
     }
 }
 
 impl SQLConnectionBuilder<MysqlConnection> for MySQLConnectionBuilder {
     fn create_connexion(&self) -> MysqlConnection {
-        return MysqlConnection::establish(&self.url)
-            .expect(&format!("Error connecting to {}", self.url));
+        MysqlConnection::establish(&self.url)
+            .expect(&format!("Error connecting to {}", self.url))
     }
 }

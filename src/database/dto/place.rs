@@ -24,22 +24,20 @@ impl Dto for Place {}
 
 impl Place {
     pub fn new(id: i32, longitude: f32, latitude: f32, city_id: i32, created_at: NaiveDateTime, updated_at: NaiveDateTime) -> Self {
-        return Place {
+        Place {
             id,
             longitude,
             latitude,
             city_id,
             created_at,
             updated_at,
-        };
+        }
     }
 }
 
 impl EntityHandler<MysqlConnection, Place> for PlacesHandler<MysqlConnection> {
     fn new(connection: MysqlConnection) -> Self {
-        return PlacesHandler {
-            connection
-        };
+        PlacesHandler { connection }
     }
 
     fn select(&self) -> Vec<Place> {
@@ -47,7 +45,7 @@ impl EntityHandler<MysqlConnection, Place> for PlacesHandler<MysqlConnection> {
         let results = place.
             load::<Place>(&self.connection)
             .expect("Failed to retrieve all data");
-        return results;
+        results
     }
 
     fn select_by_id(&self, idp: i32) -> Vec<Place> {
@@ -56,6 +54,6 @@ impl EntityHandler<MysqlConnection, Place> for PlacesHandler<MysqlConnection> {
             filter(id.eq(idp))
             .load::<Place>(&self.connection)
             .expect(format!("Failed to retrieve place {}", idp).as_str());
-        return results;
+        results
     }
 }

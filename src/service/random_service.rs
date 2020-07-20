@@ -5,7 +5,7 @@ pub struct RandomCityService {}
 
 impl RandomCityService {
     pub fn new() -> RandomCityService {
-        return RandomCityService {};
+        RandomCityService {}
     }
 
     pub fn get_random_parking(&self, city: &str) -> Vec<Place> {

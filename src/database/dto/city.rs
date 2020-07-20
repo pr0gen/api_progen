@@ -4,7 +4,7 @@ use crate::database::dto::Dto;
 use crate::database::infra::entities_handlers::EntityHandler;
 use diesel::prelude::*;
 
-#[derive(Serialize, Queryable)]
+#[derive(Serialize, Queryable, Deserialize)]
 pub struct City {
     pub id: i32,
     pub name: String,
@@ -20,7 +20,7 @@ impl Dto for City {}
 
 impl City {
     pub fn new(id :i32, name: String, postal_code: i32, country_id : i32) -> Self {
-        return City {
+        City {
             id,
             name,
             postal_code,
@@ -31,9 +31,7 @@ impl City {
 
 impl EntityHandler<MysqlConnection, City> for CitiesHandler<MysqlConnection> {
     fn new(connection: MysqlConnection) -> Self {
-        return CitiesHandler {
-            connection
-        };
+        CitiesHandler {connection}
     }
 
     fn select(&self) -> Vec<City> {
@@ -41,7 +39,7 @@ impl EntityHandler<MysqlConnection, City> for CitiesHandler<MysqlConnection> {
         let results = city.
             load::<City>(&self.connection)
             .expect("Failed to retrieve all data");
-        return results;
+        results
     }
 
     fn select_by_id(&self, idp: i32) -> Vec<City> {
@@ -50,6 +48,6 @@ impl EntityHandler<MysqlConnection, City> for CitiesHandler<MysqlConnection> {
             filter(id.eq(idp))
             .load::<City>(&self.connection)
             .expect(format!("Failed to retrieve country {}", idp).as_str());
-        return results;
+        results
     }
 }
