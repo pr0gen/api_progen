@@ -8,11 +8,12 @@ extern crate dotenv;
 extern crate rocket;
 extern crate rocket_contrib;
 
-pub mod database;
 pub mod controller;
-pub mod service;
+pub mod database;
 pub mod router;
+pub mod service;
 
 fn main() {
     router::creates_all_routes();
 }
+

@@ -3,29 +3,95 @@ use chrono::Utc;
 
 pub struct RandomCityService {}
 
-impl RandomCityService {
-    pub fn new() -> RandomCityService {
-        return RandomCityService {};
+impl Default for RandomCityService {
+    fn default() -> Self {
+        RandomCityService {}
     }
+}
 
+impl RandomCityService {
     pub fn get_random_parking(&self, city: &str) -> Vec<Place> {
         if city == "paris" {
             return vec![
-                Place::new(1, 50.631778, 3.045893, 1, Utc::now().naive_utc(), Utc::now().naive_utc()),
-                Place::new(2, 50.621754, 3.036441, 1, Utc::now().naive_utc(), Utc::now().naive_utc()),
-                Place::new(3, 50.619691, 3.039200, 1, Utc::now().naive_utc(), Utc::now().naive_utc())
+                Place::new(
+                    1,
+                    50.631_78,
+                    3.045_89,
+                    1,
+                    Utc::now().naive_utc(),
+                    Utc::now().naive_utc(),
+                ),
+                Place::new(
+                    2,
+                    50.621_78,
+                    3.036_44,
+                    1,
+                    Utc::now().naive_utc(),
+                    Utc::now().naive_utc(),
+                ),
+                Place::new(
+                    3,
+                    50.619_69,
+                    3.039_20,
+                    1,
+                    Utc::now().naive_utc(),
+                    Utc::now().naive_utc(),
+                ),
             ];
         } else if city == "lille" {
             return vec![
-                Place::new(1, 50.631778, 3.045893, 2, Utc::now().naive_utc(), Utc::now().naive_utc()),
-                Place::new(2, 50.621754, 3.036441, 2, Utc::now().naive_utc(), Utc::now().naive_utc()),
-                Place::new(3, 50.619691, 3.039200, 2, Utc::now().naive_utc(), Utc::now().naive_utc())
+                Place::new(
+                    1,
+                    50.631_77,
+                    3.045_89,
+                    2,
+                    Utc::now().naive_utc(),
+                    Utc::now().naive_utc(),
+                ),
+                Place::new(
+                    2,
+                    50.621_75,
+                    3.036_44,
+                    2,
+                    Utc::now().naive_utc(),
+                    Utc::now().naive_utc(),
+                ),
+                Place::new(
+                    3,
+                    50.619_69,
+                    3.039_20,
+                    2,
+                    Utc::now().naive_utc(),
+                    Utc::now().naive_utc(),
+                ),
             ];
         }
         return vec![
-            Place::new(1, 50.631778, 3.045893, 3, Utc::now().naive_utc(), Utc::now().naive_utc()),
-            Place::new(2, 50.621754, 3.036441, 3, Utc::now().naive_utc(), Utc::now().naive_utc()),
-            Place::new(3, 50.619691, 3.039200, 3, Utc::now().naive_utc(), Utc::now().naive_utc())
+            Place::new(
+                1,
+                50.631_77,
+                3.045_83,
+                3,
+                Utc::now().naive_utc(),
+                Utc::now().naive_utc(),
+            ),
+            Place::new(
+                2,
+                50.621_75,
+                3.036_44,
+                3,
+                Utc::now().naive_utc(),
+                Utc::now().naive_utc(),
+            ),
+            Place::new(
+                3,
+                50.619_69,
+                3.039_20,
+                3,
+                Utc::now().naive_utc(),
+                Utc::now().naive_utc(),
+            ),
         ];
     }
 }
+
