@@ -24,7 +24,7 @@ jobs:
         with:
           command: clippy
           args: -- -D warnings
-          rustfmt:
+  rustfmt:
     name: Format
     runs-on: ubuntu-latest
     steps:
