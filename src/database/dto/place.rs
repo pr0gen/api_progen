@@ -52,6 +52,6 @@ impl EntityHandler<MysqlConnection, Place> for PlacesHandler<MysqlConnection> {
         place.
             filter(id.eq(idp))
             .load::<Place>(&self.connection)
-            .expect(format!("Failed to retrieve place {}", idp).as_str())
+            .unwrap_or_else(|_| panic!("Failed to retrieve place {}", idp))
     }
 }

@@ -46,6 +46,6 @@ impl EntityHandler<MysqlConnection, City> for CitiesHandler<MysqlConnection> {
         city.
             filter(id.eq(idp))
             .load::<City>(&self.connection)
-            .expect(format!("Failed to retrieve country {}", idp).as_str())
+            .unwrap_or_else(|_| panic!("Failed to retrieve country {}", idp))
     }
 }

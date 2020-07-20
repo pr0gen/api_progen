@@ -14,21 +14,21 @@ impl RandomCityService {
     pub fn get_random_parking(&self, city: &str) -> Vec<Place> {
         if city == "paris" {
             return vec![
-                Place::new(1, 50.631_778, 3.045_893, 1, Utc::now().naive_utc(), Utc::now().naive_utc()),
-                Place::new(2, 50.621_754, 3.036_441, 1, Utc::now().naive_utc(), Utc::now().naive_utc()),
-                Place::new(3, 50.619_691, 3.039_200, 1, Utc::now().naive_utc(), Utc::now().naive_utc())
+                Place::new(1, 50.631_78, 3.045_89, 1, Utc::now().naive_utc(), Utc::now().naive_utc()),
+                Place::new(2, 50.621_78, 3.036_44, 1, Utc::now().naive_utc(), Utc::now().naive_utc()),
+                Place::new(3, 50.619_69, 3.039_20, 1, Utc::now().naive_utc(), Utc::now().naive_utc())
             ];
         } else if city == "lille" {
             return vec![
-                Place::new(1, 50.631_778, 3.045_893, 2, Utc::now().naive_utc(), Utc::now().naive_utc()),
-                Place::new(2, 50.621_754, 3.036_441, 2, Utc::now().naive_utc(), Utc::now().naive_utc()),
-                Place::new(3, 50.619_691, 3.039_200, 2, Utc::now().naive_utc(), Utc::now().naive_utc())
+                Place::new(1, 50.631_77, 3.045_89, 2, Utc::now().naive_utc(), Utc::now().naive_utc()),
+                Place::new(2, 50.621_75, 3.036_44, 2, Utc::now().naive_utc(), Utc::now().naive_utc()),
+                Place::new(3, 50.619_69, 3.039_20, 2, Utc::now().naive_utc(), Utc::now().naive_utc())
             ];
         }
         return vec![
-            Place::new(1, 50.631_778, 3.045_893, 3, Utc::now().naive_utc(), Utc::now().naive_utc()),
-            Place::new(2, 50.621_754, 3.036_441, 3, Utc::now().naive_utc(), Utc::now().naive_utc()),
-            Place::new(3, 50.619_691, 3.039_200, 3, Utc::now().naive_utc(), Utc::now().naive_utc())
+            Place::new(1, 50.631_77, 3.045_83, 3, Utc::now().naive_utc(), Utc::now().naive_utc()),
+            Place::new(2, 50.621_75, 3.036_44, 3, Utc::now().naive_utc(), Utc::now().naive_utc()),
+            Place::new(3, 50.619_69, 3.039_20, 3, Utc::now().naive_utc(), Utc::now().naive_utc())
         ];
     }
 }
