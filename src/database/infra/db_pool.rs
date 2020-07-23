@@ -3,7 +3,6 @@ use diesel::r2d2::ConnectionManager;
 use rocket::{Outcome, Request, State};
 use rocket::http::Status;
 use rocket::request::{self, FromRequest};
-use r2d2;
 use std::ops::Deref;
 
 use super::super::data_base_url;
@@ -14,7 +13,7 @@ pub fn init_pool() -> Pool {
     let data_base_url = data_base_url();
     let manager = ConnectionManager::new(&data_base_url);
     Pool::new(manager)
-        .expect(format!("Failed to create pool with {}", &data_base_url).as_str())
+        .unwrap_or_else(|_| panic!("Failed to create pool with {}", &data_base_url))
 }
 
 pub struct DBConnection(pub r2d2::PooledConnection<ConnectionManager<MysqlConnection>>);
