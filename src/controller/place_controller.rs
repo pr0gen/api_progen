@@ -1,19 +1,14 @@
 use crate::database::dto::place::Place;
-use crate::database::dto::place::PlacesHandler;
-use crate::database::infra::connection_builder::{MySQLConnectionBuilder, SQLConnectionBuilder};
-use crate::database::infra::entities_handlers::EntityHandler;
+use crate::database::dto::place::PlacesRepository;
+use crate::database::infra::repository::Repository;
+
 use rocket_contrib::json::Json;
 
-use dotenv::dotenv;
-use std::env;
+use super::super::database::infra::db_pool::DBConnection;
 
 #[get("/parking")]
-pub fn parking() -> Json<Vec<Place>> {
-    dotenv().ok();
-
-    let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
-    let connection_builder = MySQLConnectionBuilder::new(database_url);
-    let place_handler = PlacesHandler::new(connection_builder.create_connexion());
+pub fn parking(connection: DBConnection) -> Json<Vec<Place>> {
+    let place_handler = PlacesRepository::new(&*connection);
     Json(place_handler.select())
 }
 

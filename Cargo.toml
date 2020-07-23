@@ -36,8 +36,11 @@ version = "18.2.0"
 
 [dependencies.diesel]
 version = "1.4.4"
-features = ["mysql", "chrono"]
+features = ["mysql", "chrono", "r2d2"]
 dotenv = "0.10"
+
+[dependencies.r2d2]
+version = "0.8"
 
 [dependencies.openssl]
 version = "0.10.29"

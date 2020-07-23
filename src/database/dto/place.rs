@@ -1,5 +1,5 @@
 use crate::database::dto::Dto;
-use crate::database::infra::entities_handlers::EntityHandler;
+use crate::database::infra::repository::Repository;
 use chrono::NaiveDateTime;
 use diesel::prelude::*;
 use diesel::{Connection, MysqlConnection, Queryable};
@@ -15,8 +15,8 @@ pub struct Place {
     pub updated_at: NaiveDateTime,
 }
 
-pub struct PlacesHandler<C: Connection> {
-    connection: C,
+pub struct PlacesRepository<'a, C: Connection> {
+    connection: &'a C,
 }
 
 impl Dto for Place {}
@@ -41,15 +41,15 @@ impl Place {
     }
 }
 
-impl EntityHandler<MysqlConnection, Place> for PlacesHandler<MysqlConnection> {
-    fn new(connection: MysqlConnection) -> Self {
-        PlacesHandler { connection }
+impl<'a> Repository<'a, MysqlConnection, Place> for PlacesRepository<'a, MysqlConnection> {
+    fn new(connection: &'a MysqlConnection) -> Self {
+        PlacesRepository { connection }
     }
 
     fn select(&self) -> Vec<Place> {
         use super::super::schema::place::dsl::*;
         place
-            .load::<Place>(&self.connection)
+            .load::<Place>(self.connection)
             .expect("Failed to retrieve all data")
     }
 
@@ -57,7 +57,7 @@ impl EntityHandler<MysqlConnection, Place> for PlacesHandler<MysqlConnection> {
         use super::super::schema::place::dsl::*;
         place
             .filter(id.eq(idp))
-            .load::<Place>(&self.connection)
+            .load::<Place>(self.connection)
             .unwrap_or_else(|_| panic!("Failed to retrieve place {}", idp))
     }
 }

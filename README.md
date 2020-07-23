@@ -7,6 +7,10 @@ openssl
 
 `sudo apt-get install libssl-dev`
 
+pkg-config
+
+`sudo apt install pkg-config`
+
 mysql 
 
 `sudo apt-get install default-libmysqlclient-dev`

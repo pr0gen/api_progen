@@ -1,5 +1,5 @@
 use crate::database::dto::Dto;
-use crate::database::infra::entities_handlers::EntityHandler;
+use crate::database::infra::repository::Repository;
 use diesel::prelude::*;
 use diesel::{Connection, MysqlConnection, Queryable};
 use serde::{Deserialize, Serialize};
@@ -12,8 +12,8 @@ pub struct City {
     pub country_id: i32,
 }
 
-pub struct CitiesHandler<C: Connection> {
-    connection: C,
+pub struct CitiesRepository<'a, C: Connection> {
+    connection: &'a C,
 }
 
 impl Dto for City {}
@@ -29,21 +29,21 @@ impl City {
     }
 }
 
-impl EntityHandler<MysqlConnection, City> for CitiesHandler<MysqlConnection> {
-    fn new(connection: MysqlConnection) -> Self {
-        CitiesHandler { connection }
+impl<'a> Repository<'a, MysqlConnection, City> for CitiesRepository<'a, MysqlConnection> {
+    fn new(connection: &'a MysqlConnection) -> Self {
+        CitiesRepository { connection }
     }
 
     fn select(&self) -> Vec<City> {
         use super::super::schema::city::dsl::*;
-        city.load::<City>(&self.connection)
+        city.load::<City>(self.connection)
             .expect("Failed to retrieve all data")
     }
 
     fn select_by_id(&self, idp: i32) -> Vec<City> {
         use super::super::schema::city::dsl::*;
         city.filter(id.eq(idp))
-            .load::<City>(&self.connection)
+            .load::<City>(self.connection)
             .unwrap_or_else(|_| panic!("Failed to retrieve country {}", idp))
     }
 }
