@@ -5,12 +5,9 @@ use rocket::http::Status;
 use rocket::request::{self, FromRequest};
 use std::ops::Deref;
 
-use super::super::data_base_url;
-
 type Pool = r2d2::Pool<ConnectionManager<MysqlConnection>>;
 
-pub fn init_pool() -> Pool {
-    let data_base_url = data_base_url();
+pub fn init_pool(data_base_url: String) -> Pool {
     let manager = ConnectionManager::new(&data_base_url);
     Pool::new(manager)
         .unwrap_or_else(|_| panic!("Failed to create pool with {}", &data_base_url))

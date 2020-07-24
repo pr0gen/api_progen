@@ -11,6 +11,7 @@ pub struct Place {
     pub longitude: f32,
     pub latitude: f32,
     pub city_id: i32,
+    pub nb_place: i32,
     pub created_at: NaiveDateTime,
     pub updated_at: NaiveDateTime,
 }
@@ -27,6 +28,7 @@ impl Place {
         longitude: f32,
         latitude: f32,
         city_id: i32,
+        nb_place: i32,
         created_at: NaiveDateTime,
         updated_at: NaiveDateTime,
     ) -> Self {
@@ -35,6 +37,7 @@ impl Place {
             longitude,
             latitude,
             city_id,
+            nb_place,
             created_at,
             updated_at,
         }
@@ -59,6 +62,10 @@ impl<'a> Repository<'a, MysqlConnection, Place> for PlacesRepository<'a, MysqlCo
             .filter(id.eq(idp))
             .load::<Place>(self.connection)
             .unwrap_or_else(|_| panic!("Failed to retrieve place {}", idp))
+    }
+    
+    fn insert(&self, data: impl Dto) {
+        
     }
 }
 

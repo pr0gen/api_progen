@@ -1,11 +1,11 @@
 use super::super::controller::place_controller;
-
 use super::super::database::infra::db_pool;
+use super::data_base_url;
+
 
 pub fn create_routes() {
-    //TODO Add call DBPool here
     rocket::ignite()
-        .manage(db_pool::init_pool())
+        .manage(db_pool::init_pool(data_base_url()))
         .mount(
             "/parking",
             routes![

@@ -20,6 +20,7 @@ table! {
         longitude -> Float,
         latitude -> Float,
         city_id -> Integer,
+        nb_place -> Integer,
         created_at -> Timestamp,
         updated_at -> Timestamp,
     }
@@ -28,5 +29,8 @@ table! {
 joinable!(city -> country (country_id));
 joinable!(place -> city (city_id));
 
-allow_tables_to_appear_in_same_query!(city, country, place,);
-
+allow_tables_to_appear_in_same_query!(
+    city,
+    country,
+    place,
+);

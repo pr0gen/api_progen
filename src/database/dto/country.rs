@@ -41,5 +41,9 @@ impl<'a> Repository<'a, MysqlConnection, Country> for CountriesRepository<'a, My
             .load::<Country>(self.connection)
             .unwrap_or_else(|_| panic!("Failed to retrieve country {}", idp))
     }
+
+    fn insert(&self, data: impl Dto) {
+        
+    }
 }
 
