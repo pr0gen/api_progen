@@ -1,15 +1,25 @@
+use diesel::prelude::*;
+use diesel::{Connection, MysqlConnection, Queryable, Insertable};
+use serde::{Deserialize, Serialize};
+
+use crate::database::schema::city;
 use crate::database::dto::Dto;
 use crate::database::infra::repository::Repository;
-use diesel::prelude::*;
-use diesel::{Connection, MysqlConnection, Queryable};
-use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Queryable, Deserialize)]
 pub struct City {
-    pub id: i32,
-    pub name: String,
-    pub postal_code: i32,
-    pub country_id: i32,
+    id: i32,
+    name: String,
+    postal_code: i32,
+    country_id: i32,
+}
+
+#[derive(Insertable)]
+#[table_name ="city"]
+pub struct InsertableCity {
+    name: String,
+    postal_code: i32,
+    country_id: i32,
 }
 
 pub struct CitiesRepository<'a, C: Connection> {
@@ -19,6 +29,7 @@ pub struct CitiesRepository<'a, C: Connection> {
 impl Dto for City {}
 
 impl City {
+
     pub fn new(id: i32, name: String, postal_code: i32, country_id: i32) -> Self {
         City {
             id,
@@ -29,7 +40,19 @@ impl City {
     }
 }
 
+impl InsertableCity {
+
+    fn from_city(city: City) -> InsertableCity {
+        InsertableCity {
+            name: city.name,
+            postal_code: city.postal_code,
+            country_id: city.country_id,
+        }
+    }
+}
+
 impl<'a> Repository<'a, MysqlConnection, City> for CitiesRepository<'a, MysqlConnection> {
+
     fn new(connection: &'a MysqlConnection) -> Self {
         CitiesRepository { connection }
     }
@@ -47,8 +70,11 @@ impl<'a> Repository<'a, MysqlConnection, City> for CitiesRepository<'a, MysqlCon
             .unwrap_or_else(|_| panic!("Failed to retrieve country {}", idp))
     }
 
-    fn insert(&self, data: impl Dto) {
-        
+    fn insert(&self, data: City) -> QueryResult<usize> {
+        diesel::insert_into(city::table)
+            .values(&InsertableCity::from_city(data))
+            .execute(self.connection)
     }
+
 }
 

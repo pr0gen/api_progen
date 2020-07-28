@@ -9,6 +9,6 @@ pub trait Repository<'a, C: Connection, D: Dto> {
     
     fn select_by_id(&self, idp: i32) -> Vec<D>;
     
-    fn insert(&self, data: impl Dto);  
+    fn insert(&self, data: D) -> QueryResult<usize>;  
 }
 
