@@ -88,7 +88,7 @@ impl<'a> Repository<'a, MysqlConnection, City> for CitiesRepository<'a, MysqlCon
 
 impl<'a> CitiesRepository<'a, MysqlConnection> {
 
-    pub fn select_by_name(&self, city_name: &String) -> Vec<City> {
+    pub fn select_by_name(&self, city_name: &str) -> Vec<City> {
         use crate::database::schema::city::dsl::*;
         city.filter(name.eq(city_name))
             .load::<City>(self.connection)

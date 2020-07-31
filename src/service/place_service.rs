@@ -14,7 +14,7 @@ pub fn select_by_id(connection: &MysqlConnection, id: i32) -> Vec<Place> {
         .select_by_id(id)
 }
 
-pub fn select_by_city(connection: &MysqlConnection, city_name: &String) -> Vec<Place> {
+pub fn select_by_city(connection: &MysqlConnection, city_name: &str) -> Vec<Place> {
     let city = city_service::select_by_name(connection, city_name);
     let city = city.get(0)
         .unwrap_or_else(|| panic!("Failed to get city"));

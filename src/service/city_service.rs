@@ -8,7 +8,7 @@ pub fn select(connection: &MysqlConnection) -> Vec<City> {
         .select()
 }
 
-pub fn select_by_name(connection: &MysqlConnection, city_name: &String) -> Vec<City> {
+pub fn select_by_name(connection: &MysqlConnection, city_name: &str) -> Vec<City> {
     CitiesRepository::new(connection)
         .select_by_name(city_name)
 }
