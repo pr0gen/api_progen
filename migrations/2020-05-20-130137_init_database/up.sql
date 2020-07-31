@@ -73,12 +73,12 @@ VALUES (50.619651, 3.036204, 1, 5);
 INSERT INTO place (longitude, latitude, city_id, nb_place)
 VALUES (50.629694, 3.039409, 1, 2);
 INSERT INTO place (longitude, latitude, city_id, nb_place)
-VALUES (50.628691, 3.039200, 1, 9);
+VALUES (50.628691, 3.039200, 2, 9);
 INSERT INTO place (longitude, latitude, city_id, nb_place)
 VALUES (50.619612, 3.049300, 1, 1);
 INSERT INTO place (longitude, latitude, city_id, nb_place)
-VALUES (50.629291, 3.039203, 1, 1);
+VALUES (50.629291, 3.039203, 3, 1);
 INSERT INTO place (longitude, latitude, city_id, nb_place)
 VALUES (50.619202, 3.039900, 1, 1);
-INSERT INTO place (longitude, latitude, city_id, nb_place)
-VALUES (50.619291, 3.039700, 1, 2);
+INSERT INTO place (longitude,latitude, city_id, nb_place)
+VALUES (50.619291, 3.039700, 5, 2);

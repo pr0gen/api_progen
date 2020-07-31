@@ -5,6 +5,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::database::schema::place;
 use crate::database::dto::Dto;
+use crate::database::dto::city::City;
 use crate::database::infra::repository::Repository;
 
 #[derive(Serialize, Queryable, Deserialize)]
@@ -97,6 +98,16 @@ impl<'a> Repository<'a, MysqlConnection, Place> for PlacesRepository<'a, MysqlCo
         diesel::insert_into(place::table)
             .values(&InsertablePlace::from_place(data))
             .execute(self.connection)
+    }
+}
+
+impl<'a> PlacesRepository<'a, MysqlConnection> {
+    
+    pub fn select_by_city(&self, city: &City) -> Vec<Place> {
+        use crate::database::schema::place::dsl::*;
+        place.filter(city_id.eq(city.get_id()))
+           .load::<Place>(self.connection)
+           .unwrap_or_else(|_| panic!("Failed to find places for city {}", city.get_name()))
     }
 }
 

@@ -1,5 +1,5 @@
 use diesel::prelude::*;
-use diesel::{Connection, MysqlConnection, Queryable, Insertable};
+use diesel::{Connection, Queryable, Insertable};
 use serde::{Deserialize, Serialize};
 
 use crate::database::schema::city;
@@ -38,6 +38,14 @@ impl City {
             country_id,
         }
     }
+
+    pub fn get_id(&self) -> i32 {
+        self.id
+    }
+
+    pub fn get_name(&self) -> &str {
+        self.name.as_str()
+    }
 }
 
 impl InsertableCity {
@@ -67,7 +75,7 @@ impl<'a> Repository<'a, MysqlConnection, City> for CitiesRepository<'a, MysqlCon
         use super::super::schema::city::dsl::*;
         city.filter(id.eq(idp))
             .load::<City>(self.connection)
-            .unwrap_or_else(|_| panic!("Failed to retrieve country {}", idp))
+            .unwrap_or_else(|_| panic!("Failed to retrieve city {}", idp))
     }
 
     fn insert(&self, data: City) -> QueryResult<usize> {
@@ -76,5 +84,15 @@ impl<'a> Repository<'a, MysqlConnection, City> for CitiesRepository<'a, MysqlCon
             .execute(self.connection)
     }
 
+}
+
+impl<'a> CitiesRepository<'a, MysqlConnection> {
+
+    pub fn select_by_name(&self, city_name: &String) -> Vec<City> {
+        use crate::database::schema::city::dsl::*;
+        city.filter(name.eq(city_name))
+            .load::<City>(self.connection)
+            .unwrap_or_else(|_| panic!("Failed to find city {} in database", city_name))
+    }
 }
 
