@@ -1,10 +1,10 @@
 use diesel::prelude::*;
-use diesel::{Connection, Queryable, Insertable};
+use diesel::{Connection, Insertable, Queryable};
 use serde::{Deserialize, Serialize};
 
-use crate::database::schema::city;
 use crate::database::dto::Dto;
 use crate::database::infra::repository::Repository;
+use crate::database::schema::city;
 
 #[derive(Serialize, Queryable, Deserialize)]
 pub struct City {
@@ -15,7 +15,7 @@ pub struct City {
 }
 
 #[derive(Insertable)]
-#[table_name ="city"]
+#[table_name = "city"]
 pub struct InsertableCity {
     name: String,
     postal_code: i32,
@@ -29,7 +29,6 @@ pub struct CitiesRepository<'a, C: Connection> {
 impl Dto for City {}
 
 impl City {
-
     pub fn new(id: i32, name: String, postal_code: i32, country_id: i32) -> Self {
         City {
             id,
@@ -49,10 +48,9 @@ impl City {
 }
 
 impl InsertableCity {
-
-    fn from_city(city: City) -> InsertableCity {
+    fn from_city(city: &City) -> InsertableCity {
         InsertableCity {
-            name: city.name,
+            name: city.name.to_string(),
             postal_code: city.postal_code,
             country_id: city.country_id,
         }
@@ -60,7 +58,6 @@ impl InsertableCity {
 }
 
 impl<'a> Repository<'a, MysqlConnection, City> for CitiesRepository<'a, MysqlConnection> {
-
     fn new(connection: &'a MysqlConnection) -> Self {
         CitiesRepository { connection }
     }
@@ -78,16 +75,14 @@ impl<'a> Repository<'a, MysqlConnection, City> for CitiesRepository<'a, MysqlCon
             .unwrap_or_else(|_| panic!("Failed to retrieve city {}", idp))
     }
 
-    fn insert(&self, data: City) -> QueryResult<usize> {
+    fn insert(&self, data: &City) -> QueryResult<usize> {
         diesel::insert_into(city::table)
             .values(&InsertableCity::from_city(data))
             .execute(self.connection)
     }
-
 }
 
 impl<'a> CitiesRepository<'a, MysqlConnection> {
-
     pub fn select_by_name(&self, city_name: &str) -> Vec<City> {
         use crate::database::schema::city::dsl::*;
         city.filter(name.eq(city_name))
@@ -95,4 +90,3 @@ impl<'a> CitiesRepository<'a, MysqlConnection> {
             .unwrap_or_else(|_| panic!("Failed to find city {} in database", city_name))
     }
 }
-

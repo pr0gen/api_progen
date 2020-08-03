@@ -1,12 +1,11 @@
 use diesel::mysql::MysqlConnection;
 use diesel::r2d2::ConnectionManager;
-use rocket::{Outcome, Request, State};
 use rocket::http::Status;
 use rocket::request::{self, FromRequest};
+use rocket::{Outcome, Request, State};
 use std::ops::Deref;
 
 type PoolMysql = r2d2::Pool<ConnectionManager<MysqlConnection>>;
-
 
 pub fn init_pool_mysql(data_base_url: String) -> PoolMysql {
     let manager = ConnectionManager::new(&data_base_url);
@@ -34,4 +33,3 @@ impl Deref for DBConnectionMysql {
         &self.0
     }
 }
-

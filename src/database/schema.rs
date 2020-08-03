@@ -29,8 +29,4 @@ table! {
 joinable!(city -> country (country_id));
 joinable!(place -> city (city_id));
 
-allow_tables_to_appear_in_same_query!(
-    city,
-    country,
-    place,
-);
+allow_tables_to_appear_in_same_query!(city, country, place,);

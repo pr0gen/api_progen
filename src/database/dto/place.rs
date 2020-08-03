@@ -1,12 +1,36 @@
-use chrono::NaiveDateTime; 
-use diesel::prelude::*; 
-use diesel::{Connection, MysqlConnection, Queryable, Insertable};
+use chrono::NaiveDateTime;
+use diesel::prelude::*;
+use diesel::{Connection, Insertable, MysqlConnection, Queryable};
 use serde::{Deserialize, Serialize};
 
-use crate::database::schema::place;
-use crate::database::dto::Dto;
+use crate::database::dto;
 use crate::database::dto::city::City;
+use crate::database::dto::Dto;
 use crate::database::infra::repository::Repository;
+use crate::database::schema::place;
+
+pub fn as_place(longitude: f32, latitude: f32, city_id: i32, nb_place: i32) -> Place {
+    Place {
+        id: 0,
+        longitude,
+        latitude,
+        city_id,
+        nb_place,
+        created_at: dto::now(),
+        updated_at: dto::now(),
+    }
+}
+
+#[test]
+pub fn should_convert() {
+    let expected = Place::new(0, 1.0, 2.0, 3, 4, dto::now(), dto::now());
+    let actual = as_place(1.0, 2.0, 3, 4);
+    assert_eq!(actual.id, expected.id);
+    assert_eq!(actual.longitude, expected.longitude);
+    assert_eq!(actual.latitude, expected.latitude);
+    assert_eq!(actual.city_id, expected.city_id);
+    assert_eq!(actual.nb_place, expected.nb_place);
+}
 
 #[derive(Serialize, Queryable, Deserialize)]
 pub struct Place {
@@ -20,8 +44,8 @@ pub struct Place {
 }
 
 #[derive(Insertable)]
-#[table_name ="place"]
-pub struct InsertablePlace {
+#[table_name = "place"]
+struct InsertablePlace {
     longitude: f32,
     latitude: f32,
     city_id: i32,
@@ -56,11 +80,22 @@ impl Place {
             updated_at,
         }
     }
+
+    pub fn get_longitude(&self) -> f32 {
+        self.longitude
+    }
+
+    pub fn get_latitude(&self) -> f32 {
+        self.latitude
+    }
+
+    pub fn get_nb_place(&self) -> i32 {
+        self.nb_place
+    }
 }
 
 impl InsertablePlace {
-
-    fn from_place(place: Place) -> InsertablePlace {
+    fn from_place(place: &Place) -> InsertablePlace {
         InsertablePlace {
             longitude: place.longitude,
             latitude: place.latitude,
@@ -73,7 +108,6 @@ impl InsertablePlace {
 }
 
 impl<'a> Repository<'a, MysqlConnection, Place> for PlacesRepository<'a, MysqlConnection> {
-
     fn new(connection: &'a MysqlConnection) -> Self {
         PlacesRepository { connection }
     }
@@ -93,8 +127,7 @@ impl<'a> Repository<'a, MysqlConnection, Place> for PlacesRepository<'a, MysqlCo
             .unwrap_or_else(|_| panic!("Failed to retrieve place {}", idp))
     }
 
-    fn insert(&self, data: Place) -> QueryResult<usize>{
-        let data: Place = data;
+    fn insert(&self, data: &Place) -> QueryResult<usize> {
         diesel::insert_into(place::table)
             .values(&InsertablePlace::from_place(data))
             .execute(self.connection)
@@ -102,12 +135,11 @@ impl<'a> Repository<'a, MysqlConnection, Place> for PlacesRepository<'a, MysqlCo
 }
 
 impl<'a> PlacesRepository<'a, MysqlConnection> {
-    
     pub fn select_by_city(&self, city: &City) -> Vec<Place> {
         use crate::database::schema::place::dsl::*;
-        place.filter(city_id.eq(city.get_id()))
-           .load::<Place>(self.connection)
-           .unwrap_or_else(|_| panic!("Failed to find places for city {}", city.get_name()))
+        place
+            .filter(city_id.eq(city.get_id()))
+            .load::<Place>(self.connection)
+            .unwrap_or_else(|_| panic!("Failed to find places for city {}", city.get_name()))
     }
 }
-
