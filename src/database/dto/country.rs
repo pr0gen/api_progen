@@ -1,13 +1,21 @@
+use diesel::prelude::*;
+use diesel::{Connection, Insertable, MysqlConnection, Queryable};
+use serde::{Deserialize, Serialize};
+
 use crate::database::dto::Dto;
 use crate::database::infra::repository::Repository;
-use diesel::prelude::*;
-use diesel::{Connection, MysqlConnection, Queryable};
-use serde::{Deserialize, Serialize};
+use crate::database::schema::country;
 
 #[derive(Serialize, Queryable, Deserialize)]
 pub struct Country {
-    pub id: i32,
-    pub name: String,
+    id: i32,
+    name: String,
+}
+
+#[derive(Insertable)]
+#[table_name = "country"]
+pub struct InsertableCountry {
+    name: String,
 }
 
 pub struct CountriesRepository<'a, C: Connection> {
@@ -19,6 +27,14 @@ impl Dto for Country {}
 impl Country {
     pub fn new(id: i32, name: String) -> Self {
         Country { id, name }
+    }
+}
+
+impl InsertableCountry {
+    fn from_country(country: &Country) -> InsertableCountry {
+        InsertableCountry {
+            name: country.name.to_string(),
+        }
     }
 }
 
@@ -41,5 +57,20 @@ impl<'a> Repository<'a, MysqlConnection, Country> for CountriesRepository<'a, My
             .load::<Country>(self.connection)
             .unwrap_or_else(|_| panic!("Failed to retrieve country {}", idp))
     }
-}
 
+    fn insert(&self, data: &Country) -> QueryResult<usize> {
+        diesel::insert_into(country::table)
+            .values(&InsertableCountry::from_country(data))
+            .execute(self.connection)
+    }
+    
+    fn insert_multiples(&self, data: &[Country]) -> QueryResult<usize> {
+        let insert_countries: Vec<InsertableCountry> = data
+            .iter()
+            .map(|country| InsertableCountry::from_country(country))
+            .collect();
+        diesel::insert_into(country::table)
+            .values(insert_countries)
+            .execute(self.connection)
+    }
+}

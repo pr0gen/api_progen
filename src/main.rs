@@ -16,4 +16,3 @@ pub mod service;
 fn main() {
     router::creates_all_routes();
 }
-

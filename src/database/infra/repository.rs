@@ -3,7 +3,12 @@ use diesel::prelude::*;
 
 pub trait Repository<'a, C: Connection, D: Dto> {
     fn new(connection: &'a C) -> Self;
-    fn select(&self) -> Vec<D>;
-    fn select_by_id(&self, idp: i32) -> Vec<D>;
-}
 
+    fn select(&self) -> Vec<D>;
+
+    fn select_by_id(&self, idp: i32) -> Vec<D>;
+
+    fn insert(&self, data: &D) -> QueryResult<usize>;
+
+    fn insert_multiples(&self, data: &[D]) -> QueryResult<usize>;
+}
