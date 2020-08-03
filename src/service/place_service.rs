@@ -23,3 +23,9 @@ pub fn select_by_city(connection: &MysqlConnection, city_name: &str) -> Vec<Plac
 pub fn add(connection: &MysqlConnection, place: &Place) -> QueryResult<usize> {
     PlacesRepository::new(connection).insert(place)
 }
+
+pub fn add_multiples(connection: &MysqlConnection, places: &[Place]) -> QueryResult<usize> {
+    PlacesRepository::new(connection)
+        .insert_multiples(places)
+}
+

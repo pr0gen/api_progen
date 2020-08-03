@@ -5,6 +5,6 @@ use crate::database::infra::db_pool;
 pub fn create_routes() {
     rocket::ignite()
         .manage(db_pool::init_pool_mysql(data_base_url()))
-        .mount("/place", routes![get_all, get_by_city, add,])
+        .mount("/place", routes![get_all, get_by_city, add, add_multiples])
         .launch();
 }

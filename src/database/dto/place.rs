@@ -132,6 +132,16 @@ impl<'a> Repository<'a, MysqlConnection, Place> for PlacesRepository<'a, MysqlCo
             .values(&InsertablePlace::from_place(data))
             .execute(self.connection)
     }
+
+    fn insert_multiples(&self, data: &[Place]) -> QueryResult<usize> {
+        let insert_place: Vec<InsertablePlace> = data
+            .iter()
+            .map(|place| InsertablePlace::from_place(place))
+            .collect();
+        diesel::insert_into(place::table)
+            .values(insert_place)
+            .execute(self.connection)
+    }
 }
 
 impl<'a> PlacesRepository<'a, MysqlConnection> {

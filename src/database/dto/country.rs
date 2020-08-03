@@ -63,4 +63,14 @@ impl<'a> Repository<'a, MysqlConnection, Country> for CountriesRepository<'a, My
             .values(&InsertableCountry::from_country(data))
             .execute(self.connection)
     }
+    
+    fn insert_multiples(&self, data: &[Country]) -> QueryResult<usize> {
+        let insert_countries: Vec<InsertableCountry> = data
+            .iter()
+            .map(|country| InsertableCountry::from_country(country))
+            .collect();
+        diesel::insert_into(country::table)
+            .values(insert_countries)
+            .execute(self.connection)
+    }
 }

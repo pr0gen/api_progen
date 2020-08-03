@@ -80,6 +80,16 @@ impl<'a> Repository<'a, MysqlConnection, City> for CitiesRepository<'a, MysqlCon
             .values(&InsertableCity::from_city(data))
             .execute(self.connection)
     }
+
+    fn insert_multiples(&self, data: &[City]) -> QueryResult<usize> {
+        let insert_cities: Vec<InsertableCity> = data
+            .iter()
+            .map(|city| InsertableCity::from_city(city))
+            .collect();
+        diesel::insert_into(city::table)
+            .values(insert_cities)
+            .execute(self.connection)
+    }
 }
 
 impl<'a> CitiesRepository<'a, MysqlConnection> {
