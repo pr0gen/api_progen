@@ -51,6 +51,7 @@ pub fn add_multiples(connection: DBConnectionMysql, places: Json<Vec<JsonPlace>>
     String::from("Successfuly insert places")
 }
 
+
 #[derive(Serialize, Deserialize)]
 pub struct JsonPlace {
     longitude: f32,

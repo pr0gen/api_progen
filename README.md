@@ -31,3 +31,7 @@ run rust
 
 `cargo run` in src file
 
+Migration 
+`diesel migration run` 
+should create schema.rs in `src/database/schema.rs` and tables in mysql
+
