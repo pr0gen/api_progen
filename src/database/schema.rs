@@ -38,6 +38,7 @@ table! {
         id -> Integer,
         name -> Varchar,
         password -> Varchar,
+        token -> Varchar,
         role_id -> Integer,
     }
 }

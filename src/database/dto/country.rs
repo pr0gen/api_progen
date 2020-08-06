@@ -63,7 +63,7 @@ impl<'a> Repository<'a, MysqlConnection, Country> for CountriesRepository<'a, My
             .values(&InsertableCountry::from_country(data))
             .execute(self.connection)
     }
-    
+
     fn insert_multiples(&self, data: &[Country]) -> QueryResult<usize> {
         let insert_countries: Vec<InsertableCountry> = data
             .iter()

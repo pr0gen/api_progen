@@ -25,7 +25,5 @@ pub fn add(connection: &MysqlConnection, place: &Place) -> QueryResult<usize> {
 }
 
 pub fn add_multiples(connection: &MysqlConnection, places: &[Place]) -> QueryResult<usize> {
-    PlacesRepository::new(connection)
-        .insert_multiples(places)
+    PlacesRepository::new(connection).insert_multiples(places)
 }
-
