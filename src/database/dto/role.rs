@@ -26,10 +26,7 @@ impl Dto for Role {}
 
 impl Role {
     pub fn new(id: i32, name: String) -> Self {
-        Role {
-            id, 
-            name,
-        }
+        Role { id, name }
     }
 }
 
@@ -75,4 +72,3 @@ impl<'a> Repository<'a, MysqlConnection, Role> for RolesRepository<'a, MysqlConn
             .execute(self.connection)
     }
 }
-

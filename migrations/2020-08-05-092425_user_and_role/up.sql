@@ -18,7 +18,7 @@ VALUES
 create table user (
     id int auto_increment primary key,
     name varchar(50) not null,
-    password varchar(50) not null,
+    password varchar(255) not null,
     token varchar(255),
     role_id int not null,
     constraint role_id_fk foreign key (role_id) references role (id)
