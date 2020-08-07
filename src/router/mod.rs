@@ -15,7 +15,7 @@ pub fn creates_all_routes() {
         .launch();
 }
 
-fn data_base_url() -> String {
+pub fn data_base_url() -> String {
     dotenv().ok();
     env::var("DATABASE_URL").expect("DATABASE_URL must be set")
 }

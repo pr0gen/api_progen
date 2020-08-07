@@ -1,13 +1,14 @@
 use argon2::{self, Config};
 use diesel::prelude::*;
+use diesel::result::Error;
 use rand::distributions::Alphanumeric;
 use rand::Rng;
 
 use crate::database::dto::user::User;
-use crate::database::dto::user::UsersRepository;
+use crate::database::repository::user_repository::UsersRepository;
 use crate::database::infra::repository::Repository;
 
-pub fn register(connection: &MysqlConnection, user: &User) -> Result<String, String> {
+pub fn register(connection: &MysqlConnection, user: &User) -> Result<String, Error> {
     let hashed_user = User::new(
         *user.get_id(),
         user.get_name().clone(),
@@ -15,18 +16,18 @@ pub fn register(connection: &MysqlConnection, user: &User) -> Result<String, Str
         generate_token(),
         *user.get_role_id(),
     );
+    
     let repository = UsersRepository::new(connection);
-
-    if repository.exists(user.get_name()) {
-        return Err(String::from("Already exists !"));
+    let result = match repository.exists(user.get_name()) {
+        Ok(false) => repository.insert(&hashed_user),
+        Ok(true) => return Ok(String::from("Already exists")),
+        Err(e) => return Err(e),
+    };
+    
+    match result {
+       Ok(_) => Ok(String::from("Successfuly register user")),
+       Err(e) => Err(e),
     }
-
-    let result = repository.insert(&hashed_user);
-    if result.is_err() {
-        return Err(format!("Failed to insert user {} in database", user.get_name()));
-    }
-
-    Ok(String::from("Successfuly register user"))
 }
 
 pub fn login(connection: &MysqlConnection, user_log: &User) -> Result<String, String> {

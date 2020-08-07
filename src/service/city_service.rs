@@ -1,4 +1,4 @@
-use crate::database::dto::city::CitiesRepository;
+use crate::database::repository::city_repository::CitiesRepository;
 use crate::database::dto::city::City;
 use crate::database::infra::repository::Repository;
 use diesel::mysql::MysqlConnection;
