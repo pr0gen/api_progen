@@ -17,6 +17,7 @@ jobs:
 
       - name: Install diesel
         run: |
+          cargo install diesel_cli --no-default-features --features mysql
           diesel setup
 
       - name: Checkout sources
