@@ -32,8 +32,6 @@ jobs:
           mysql --host localhost -uroot -proot api_progen -e "show tables;"
           
       - name: Run cargo test
-        uses: actions-rs/cargo@v1
-        continue-on-error: false
         run: |
           RUST_BACKTRACE=1 cargo test -- --nocapture
 
