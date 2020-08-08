@@ -32,6 +32,7 @@ jobs:
           
       - name: Run cargo test
         run: |
+          cargo install diesel_cli --no-default-features --features mysql
           diesel setup
           mysql api_progen -e "show tables" -uroot -p'root'
           RUST_BACKTRACE=1 cargo test -- --nocapture
