@@ -15,11 +15,6 @@ jobs:
           mysql -e "create database api_progen; grant all on \`api_progen\`.* to 'root'@'localhost';" -uroot -proot
           echo '::set-env name=DATABASE_URL::mysql://root:root@localhost/api_progen'
 
-      - name: Install diesel
-        run: |
-          cargo install diesel_cli --no-default-features --features mysql
-          diesel setup
-
       - name: Checkout sources
         uses: actions/checkout@v2
 
