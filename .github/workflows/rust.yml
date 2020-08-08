@@ -29,12 +29,13 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get -y install libmysqlclient-dev
-          mysql --host localhost -uroot -proot -e "show databases"
+          mysql --host localhost -uroot -proot api_progen -e "show tables;"
           
       - name: Run cargo test
         uses: actions-rs/cargo@v1
         continue-on-error: false
-      - run: RUST_BACKTRACE=1 cargo test -- --nocapture
+        run: |
+          RUST_BACKTRACE=1 cargo test -- --nocapture
 
   clippy:
     name: Clippy
