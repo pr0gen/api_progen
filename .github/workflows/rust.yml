@@ -29,7 +29,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get -y install libmysqlclient-dev
-          mysql --host localhost -uroot -proot api_progen -e "show tables;"
+          mysql api_progen -e "show tables" -uroot -p'root'
           
       - name: Run cargo test
         run: |
