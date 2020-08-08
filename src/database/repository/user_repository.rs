@@ -29,9 +29,13 @@ impl<'a> Repository<'a, MysqlConnection, User> for UsersRepository<'a, MysqlConn
     }
 
     fn insert(&self, data: &User) -> QueryResult<usize> {
-        diesel::insert_into(user::table)
-            .values(&InsertableUser::from_user(data))
-            .execute(self.connection)
+    use diesel::debug_query;
+    use diesel::mysql::Mysql;
+        let to_insert = InsertableUser::from_user(data);
+        let query = diesel::insert_into(user::table)
+            .values(&to_insert);
+        println!("{}", debug_query::<Mysql, _>(&query));
+        query.execute(self.connection)
     }
 
     fn insert_multiples(&self, data: &[User]) -> QueryResult<usize> {
@@ -72,15 +76,18 @@ fn should_insert_and_select() {
     use crate::database::infra::db_pool;
     use crate::router;
     use crate::database::dto::user::as_user;
+    use diesel::debug_query;
+    use diesel::mysql::Mysql;
     let to_insert = as_user(String::from("malokran"), String::from("malokran"), 1);
     let connection = db_pool::create_connexion(router::test_data_base_url().as_str());
     connection.test_transaction::<_, Error, _>(|| {
         let repository = UsersRepository::new(&connection);
         repository.insert(&to_insert)?;
-    
+
         use crate::database::schema::user::table;
-        let all = table.select(user::name)
-            .load::<String>(&connection)?;
+        let query = table.select(user::name);
+        println!("{}", debug_query::<Mysql, _>(&query));
+        let all = query.load::<String>(&connection)?;
 
         assert!(all.contains(&String::from("malokran")));
         Ok(())
