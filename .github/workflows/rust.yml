@@ -18,7 +18,7 @@ jobs:
           sudo apt-get update
           sudo apt-get -y install mysql-server libmysqlclient-dev
           sudo /etc/init.d/mysql start
-          mysql -e "create database api_progen; grant all on \'api_progen\' to 'root'@'localhost';" -uroot -proot
+          mysql -e "create database api_progen; grant all on api_progen to 'root'@'localhost';" -uroot -proot
           echo '::set-env name=DATABASE_URL::mysql://root:root@localhost/api_progen'
   test:
     name: Test
