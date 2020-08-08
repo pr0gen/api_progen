@@ -29,10 +29,11 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get -y install libmysqlclient-dev
-          mysql api_progen -e "show tables" -uroot -p'root'
           
       - name: Run cargo test
         run: |
+          diesel setup
+          mysql api_progen -e "show tables" -uroot -p'root'
           RUST_BACKTRACE=1 cargo test -- --nocapture
 
   clippy:
