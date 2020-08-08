@@ -14,6 +14,16 @@ pub fn as_user(name: String, password: String, role_id: i32) -> User {
     }
 }
 
+#[test]
+pub fn should_convert() {
+    let expected = User::new(0, String::from("rolfie"), String::from("rolfie"), String::from(""), 1);
+    let actual = as_user(String::from("rolfie"), String::from("rolfie"), 1);
+    assert_eq!(actual.name, expected.name);
+    assert_eq!(actual.password, expected.password);
+    assert_eq!(actual.token, expected.token);
+}
+
+
 #[derive(Serialize, Queryable, Deserialize, Debug)]
 pub struct User {
     id: i32,

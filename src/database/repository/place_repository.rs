@@ -56,3 +56,25 @@ impl<'a> PlacesRepository<'a, MysqlConnection> {
             .unwrap_or_else(|_| panic!("Failed to find places for city {}", city.get_name()))
     }
 }
+
+#[test]
+fn should_insert_and_select() {
+    use crate::database::infra::db_pool;
+    use crate::router;
+    use crate::database::dto::place::as_place;
+    use diesel::result::Error;
+    let to_insert = as_place(1.0, 2.0, 1, 10);
+    let connection = db_pool::create_connexion(router::test_data_base_url().as_str());
+    connection.test_transaction::<_, Error, _>(|| {
+        let repository = PlacesRepository::new(&connection);
+        repository.insert(&to_insert)?;
+
+        use crate::database::schema::place::table;
+        let all = table.select(place::city_id)
+            .load::<i32>(&connection)?;
+
+        assert!(all.contains(&1));
+        Ok(())
+    });
+}
+

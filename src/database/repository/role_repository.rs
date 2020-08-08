@@ -44,3 +44,23 @@ impl<'a> Repository<'a, MysqlConnection, Role> for RolesRepository<'a, MysqlConn
     }
 }
 
+#[test]
+fn should_insert_and_select() {
+    use crate::database::infra::db_pool;
+    use crate::router;
+    use crate::database::dto::role::Role;
+    use diesel::result::Error;
+    let to_insert = Role::new(1, String::from("dev"));
+    let connection = db_pool::create_connexion(router::test_data_base_url().as_str());
+    connection.test_transaction::<_, Error, _>(|| {
+        let repository = RolesRepository::new(&connection);
+        repository.insert(&to_insert)?;
+
+        use crate::database::schema::role::table;
+        let all = table.select(role::name)
+            .load::<String>(&connection)?;
+
+        assert!(all.contains(&String::from("dev")));
+        Ok(())
+    });
+}
