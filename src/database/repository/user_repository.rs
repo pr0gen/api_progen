@@ -73,7 +73,7 @@ fn should_insert_and_select() {
     use crate::router;
     use crate::database::dto::user::as_user;
     let to_insert = as_user(String::from("malokran"), String::from("malokran"), 1);
-    let connection = db_pool::create_connexion(router::data_base_url().as_str());
+    let connection = db_pool::create_connexion(router::test_data_base_url().as_str());
     connection.test_transaction::<_, Error, _>(|| {
         let repository = UsersRepository::new(&connection);
         repository.insert(&to_insert)?;

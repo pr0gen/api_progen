@@ -19,3 +19,10 @@ pub fn data_base_url() -> String {
     dotenv().ok();
     env::var("DATABASE_URL").expect("DATABASE_URL must be set")
 }
+
+pub fn test_data_base_url() -> String {
+    dotenv().ok();
+    env::var("DATABASE_URL")
+        .or_else(|_| env::var("REMOTE_DATABASE_URL"))
+        .expect("Either DATABASE_URL or REMOTE_DATABASE_URL must be set")
+}
