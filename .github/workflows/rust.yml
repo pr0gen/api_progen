@@ -21,8 +21,6 @@ jobs:
           sudo /etc/init.d/mysql start
           mysql -e "create database api_progen; grant all on \'api_progen\' to 'root'@'localhost';" -uroot -proot
           echo '::set-env name=DATABASE_URL::mysql://root:root@localhost/api_progen'
-
-
   test:
     name: Test
     runs-on: ubuntu-latest
