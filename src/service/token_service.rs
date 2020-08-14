@@ -20,7 +20,7 @@ pub fn refresh(connection: &MysqlConnection, user: &User) -> Result<User, String
 }
 
 fn renew_token(user: &User, updated_at: NaiveDateTime) -> User {
-    println!(" => real: {} user: {}", updated_at, user.get_updated_at());
+    //println!(" => real: {} user: {}", updated_at, user.get_updated_at());
     match updated_at.timestamp() - user.get_updated_at().timestamp() {
         0 ..=3600 => User::new(
             *user.get_id(),
@@ -46,11 +46,11 @@ fn renew_token(user: &User, updated_at: NaiveDateTime) -> User {
 
 fn resolve_date(updated_at: NaiveDateTime) -> NaiveDateTime {
     let now = dto::now();
-    println!("-> {}", updated_at.timestamp_millis() - now.timestamp_millis());
+    //println!("-> {}", updated_at.timestamp_millis() - now.timestamp_millis());
     if updated_at.timestamp_millis() - now.timestamp_millis() <= 0 {
         return now.checked_add_signed(Duration::seconds(ONE_HOUR)).unwrap();
     }
-    return updated_at;
+    updated_at
 }
 
 #[test]
