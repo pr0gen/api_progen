@@ -1,8 +1,8 @@
 use diesel::prelude::*;
 use diesel::{Connection, MysqlConnection};
 
+use crate::database::dto::role::{InsertableRole, Role};
 use crate::database::infra::repository::Repository;
-use crate::database::dto::role::{Role, InsertableRole};
 use crate::database::schema::role;
 
 pub struct RolesRepository<'a, C: Connection> {
@@ -46,9 +46,9 @@ impl<'a> Repository<'a, MysqlConnection, Role> for RolesRepository<'a, MysqlConn
 
 #[test]
 fn should_insert_and_select() {
+    use crate::database::dto::role::Role;
     use crate::database::infra::db_pool;
     use crate::router;
-    use crate::database::dto::role::Role;
     use diesel::result::Error;
     let to_insert = Role::new(1, String::from("dev"));
     let connection = db_pool::create_connexion(router::test_data_base_url().as_str());
@@ -57,8 +57,7 @@ fn should_insert_and_select() {
         repository.insert(&to_insert)?;
 
         use crate::database::schema::role::table;
-        let all = table.select(role::name)
-            .load::<String>(&connection)?;
+        let all = table.select(role::name).load::<String>(&connection)?;
 
         assert!(all.contains(&String::from("dev")));
         Ok(())

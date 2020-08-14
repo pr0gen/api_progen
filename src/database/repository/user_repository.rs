@@ -2,7 +2,7 @@ use diesel::prelude::*;
 use diesel::result::Error;
 use diesel::{Connection, MysqlConnection};
 
-use crate::database::dto::user::{User, InsertableUser};
+use crate::database::dto::user::{InsertableUser, User};
 use crate::database::infra::repository::Repository;
 use crate::database::schema::user;
 
@@ -65,13 +65,25 @@ impl<'a> UsersRepository<'a, MysqlConnection> {
             _ => Ok(true),
         }
     }
+
+    pub fn check_token(&self, token_to_check: &str) -> Result<bool, Error> {
+        use crate::database::schema::user::dsl::*;
+        let result = user
+            .filter(token.eq(token_to_check))
+            .load::<User>(self.connection)
+            .unwrap_or_else(|_| panic!("Failed to check token"));
+        match result.len() {
+            1 => Ok(true),
+            _ => Ok(false),
+        }
+    }
 }
 
 #[test]
 fn should_insert_and_select() {
+    use crate::database::dto::user::as_user;
     use crate::database::infra::db_pool;
     use crate::router;
-    use crate::database::dto::user::as_user;
     let to_insert = as_user(String::from("malokran"), String::from("malokran"), 1);
     let connection = db_pool::create_connexion(router::test_data_base_url().as_str());
     connection.test_transaction::<_, Error, _>(|| {
@@ -79,11 +91,35 @@ fn should_insert_and_select() {
         repository.insert(&to_insert)?;
 
         use crate::database::schema::user::table;
-        let all = table.select(user::name)
-            .load::<String>(&connection)?;
+        let all = table.select(user::name).load::<String>(&connection)?;
 
         assert!(all.contains(&String::from("malokran")));
         Ok(())
     });
 }
 
+#[test]
+fn should_check_token() {
+    use crate::database::dto::now;
+    use crate::database::infra::db_pool;
+    use crate::router;
+    let token = String::from("this is a token !@32455");
+    let user_with_token = User::new(
+        0,
+        String::from("ephrimes"),
+        String::from("ephrimes"),
+        token.clone(),
+        1,
+        now(),
+        now(),
+    );
+    let connection = db_pool::create_connexion(router::test_data_base_url().as_str());
+    connection.test_transaction::<_, Error, _>(|| {
+        let repository = UsersRepository::new(&connection);
+
+        repository.insert(&user_with_token)?;
+
+        assert!(repository.check_token(token.as_str()).unwrap());
+        Ok(())
+    });
+}

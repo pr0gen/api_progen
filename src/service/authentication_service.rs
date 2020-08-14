@@ -4,9 +4,10 @@ use diesel::result::Error;
 use rand::distributions::Alphanumeric;
 use rand::Rng;
 
+use crate::database::dto;
 use crate::database::dto::user::User;
-use crate::database::repository::user_repository::UsersRepository;
 use crate::database::infra::repository::Repository;
+use crate::database::repository::user_repository::UsersRepository;
 
 pub fn register(connection: &MysqlConnection, user: &User) -> Result<String, Error> {
     let hashed_user = User::new(
@@ -15,18 +16,20 @@ pub fn register(connection: &MysqlConnection, user: &User) -> Result<String, Err
         hash_password(user.get_password()),
         generate_token(),
         *user.get_role_id(),
+        dto::now(),
+        dto::now(),
     );
-    
+
     let repository = UsersRepository::new(connection);
     let result = match repository.exists(user.get_name()) {
         Ok(false) => repository.insert(&hashed_user),
         Ok(true) => return Ok(String::from("Already exists")),
         Err(e) => return Err(e),
     };
-    
+
     match result {
-       Ok(_) => Ok(String::from("Successfuly register user")),
-       Err(e) => Err(e),
+        Ok(_) => Ok(String::from("Successfuly register user")),
+        Err(e) => Err(e),
     }
 }
 
@@ -44,7 +47,11 @@ pub fn login(connection: &MysqlConnection, user_log: &User) -> Result<String, St
     }
 }
 
-fn generate_token() -> String {
+pub fn check_token(connection: &MysqlConnection, token: &str) -> Result<bool, Error> {
+    UsersRepository::new(connection).check_token(token)
+}
+
+pub fn generate_token() -> String {
     generate_string(255)
 }
 

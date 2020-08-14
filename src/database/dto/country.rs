@@ -16,7 +16,6 @@ pub struct InsertableCountry {
     name: String,
 }
 
-
 impl Dto for Country {}
 
 impl Country {
@@ -32,4 +31,3 @@ impl InsertableCountry {
         }
     }
 }
-

@@ -2,8 +2,8 @@ use diesel::mysql::MysqlConnection;
 use diesel::prelude::*;
 
 use crate::database::dto::place::Place;
-use crate::database::repository::place_repository::PlacesRepository;
 use crate::database::infra::repository::Repository;
+use crate::database::repository::place_repository::PlacesRepository;
 use crate::service::city_service;
 
 pub fn select(connection: &MysqlConnection) -> Vec<Place> {

@@ -21,6 +21,8 @@ create table user (
   password varchar(255) not null,
   token varchar(255),
   role_id int not null,
+  created_at timestamp not null default current_timestamp(),
+  updated_at timestamp not null default current_timestamp(),
   constraint pk_user primary key (id, name),
   constraint role_id_fk foreign key (role_id) references role (id)
 );

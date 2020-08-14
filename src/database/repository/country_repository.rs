@@ -1,8 +1,8 @@
 use diesel::prelude::*;
 use diesel::{Connection, MysqlConnection};
 
-use crate::database::infra::repository::Repository;
 use crate::database::dto::country::{Country, InsertableCountry};
+use crate::database::infra::repository::Repository;
 use crate::database::schema::country;
 
 pub struct CountriesRepository<'a, C: Connection> {
@@ -45,4 +45,3 @@ impl<'a> Repository<'a, MysqlConnection, Country> for CountriesRepository<'a, My
             .execute(self.connection)
     }
 }
-

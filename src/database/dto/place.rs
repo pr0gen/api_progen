@@ -51,7 +51,6 @@ pub struct InsertablePlace {
     updated_at: NaiveDateTime,
 }
 
-
 impl Dto for Place {}
 
 impl Place {
@@ -100,4 +99,3 @@ impl InsertablePlace {
         }
     }
 }
-

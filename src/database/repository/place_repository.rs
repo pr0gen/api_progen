@@ -1,10 +1,10 @@
 use diesel::prelude::*;
 use diesel::{Connection, MysqlConnection};
 
-use crate::database::dto::place::{Place, InsertablePlace};
 use crate::database::dto::city::City;
-use crate::database::schema::place;
+use crate::database::dto::place::{InsertablePlace, Place};
 use crate::database::infra::repository::Repository;
+use crate::database::schema::place;
 
 pub struct PlacesRepository<'a, C: Connection> {
     connection: &'a C,
@@ -59,9 +59,9 @@ impl<'a> PlacesRepository<'a, MysqlConnection> {
 
 #[test]
 fn should_insert_and_select() {
+    use crate::database::dto::place::as_place;
     use crate::database::infra::db_pool;
     use crate::router;
-    use crate::database::dto::place::as_place;
     use diesel::result::Error;
     let to_insert = as_place(1.0, 2.0, 1, 10);
     let connection = db_pool::create_connexion(router::test_data_base_url().as_str());
@@ -70,11 +70,9 @@ fn should_insert_and_select() {
         repository.insert(&to_insert)?;
 
         use crate::database::schema::place::table;
-        let all = table.select(place::city_id)
-            .load::<i32>(&connection)?;
+        let all = table.select(place::city_id).load::<i32>(&connection)?;
 
         assert!(all.contains(&1));
         Ok(())
     });
 }
-

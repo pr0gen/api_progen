@@ -53,12 +53,11 @@ impl<'a> CitiesRepository<'a, MysqlConnection> {
     }
 }
 
-
 #[test]
 fn should_insert_and_select() {
+    use crate::database::dto::city::City;
     use crate::database::infra::db_pool;
     use crate::router;
-    use crate::database::dto::city::City;
     use diesel::result::Error;
     let to_insert = City::new(1, String::from("Dunkerque"), 59240, 1);
     let connection = db_pool::create_connexion(router::test_data_base_url().as_str());
@@ -67,11 +66,9 @@ fn should_insert_and_select() {
         repository.insert(&to_insert)?;
 
         use crate::database::schema::city::table;
-        let all = table.select(city::name)
-            .load::<String>(&connection)?;
+        let all = table.select(city::name).load::<String>(&connection)?;
 
         assert!(all.contains(&String::from("Dunkerque")));
         Ok(())
     });
 }
-
