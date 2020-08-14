@@ -42,7 +42,14 @@ pub fn add_multiples(connection: DBConnectionMysql, places: Json<Vec<JsonPlace>>
     let places = places.0;
     let places: Vec<Place> = places
         .iter()
-        .map(|place| place::as_place(place.longitude, place.latitude, place.city_id, place.nb_place))
+        .map(|place| {
+            place::as_place(
+                place.longitude,
+                place.latitude,
+                place.city_id,
+                place.nb_place,
+            )
+        })
         .collect();
     let result = place_service::add_multiples(&*connection, &places);
     if result.is_err() {

@@ -1,12 +1,9 @@
 use chrono::NaiveDateTime;
-use diesel::prelude::*;
-use diesel::{Connection, Insertable, MysqlConnection, Queryable};
+use diesel::{Insertable, Queryable};
 use serde::{Deserialize, Serialize};
 
 use crate::database::dto;
-use crate::database::dto::city::City;
 use crate::database::dto::Dto;
-use crate::database::infra::repository::Repository;
 use crate::database::schema::place;
 
 pub fn as_place(longitude: f32, latitude: f32, city_id: i32, nb_place: i32) -> Place {
@@ -45,17 +42,13 @@ pub struct Place {
 
 #[derive(Insertable)]
 #[table_name = "place"]
-struct InsertablePlace {
+pub struct InsertablePlace {
     longitude: f32,
     latitude: f32,
     city_id: i32,
     nb_place: i32,
     created_at: NaiveDateTime,
     updated_at: NaiveDateTime,
-}
-
-pub struct PlacesRepository<'a, C: Connection> {
-    connection: &'a C,
 }
 
 impl Dto for Place {}
@@ -95,7 +88,7 @@ impl Place {
 }
 
 impl InsertablePlace {
-    fn from_place(place: &Place) -> InsertablePlace {
+    pub fn from_place(place: &Place) -> InsertablePlace {
         InsertablePlace {
             longitude: place.longitude,
             latitude: place.latitude,
@@ -104,52 +97,5 @@ impl InsertablePlace {
             created_at: place.created_at,
             updated_at: place.updated_at,
         }
-    }
-}
-
-impl<'a> Repository<'a, MysqlConnection, Place> for PlacesRepository<'a, MysqlConnection> {
-    fn new(connection: &'a MysqlConnection) -> Self {
-        PlacesRepository { connection }
-    }
-
-    fn select(&self) -> Vec<Place> {
-        use crate::database::schema::place::dsl::*;
-        place
-            .load::<Place>(self.connection)
-            .expect("Failed to retrieve all data")
-    }
-
-    fn select_by_id(&self, idp: i32) -> Vec<Place> {
-        use crate::database::schema::place::dsl::*;
-        place
-            .filter(id.eq(idp))
-            .load::<Place>(self.connection)
-            .unwrap_or_else(|_| panic!("Failed to retrieve place {}", idp))
-    }
-
-    fn insert(&self, data: &Place) -> QueryResult<usize> {
-        diesel::insert_into(place::table)
-            .values(&InsertablePlace::from_place(data))
-            .execute(self.connection)
-    }
-
-    fn insert_multiples(&self, data: &[Place]) -> QueryResult<usize> {
-        let insert_place: Vec<InsertablePlace> = data
-            .iter()
-            .map(|place| InsertablePlace::from_place(place))
-            .collect();
-        diesel::insert_into(place::table)
-            .values(insert_place)
-            .execute(self.connection)
-    }
-}
-
-impl<'a> PlacesRepository<'a, MysqlConnection> {
-    pub fn select_by_city(&self, city: &City) -> Vec<Place> {
-        use crate::database::schema::place::dsl::*;
-        place
-            .filter(city_id.eq(city.get_id()))
-            .load::<Place>(self.connection)
-            .unwrap_or_else(|_| panic!("Failed to find places for city {}", city.get_name()))
     }
 }

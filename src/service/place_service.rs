@@ -2,8 +2,8 @@ use diesel::mysql::MysqlConnection;
 use diesel::prelude::*;
 
 use crate::database::dto::place::Place;
-use crate::database::dto::place::PlacesRepository;
 use crate::database::infra::repository::Repository;
+use crate::database::repository::place_repository::PlacesRepository;
 use crate::service::city_service;
 
 pub fn select(connection: &MysqlConnection) -> Vec<Place> {
@@ -25,7 +25,5 @@ pub fn add(connection: &MysqlConnection, place: &Place) -> QueryResult<usize> {
 }
 
 pub fn add_multiples(connection: &MysqlConnection, places: &[Place]) -> QueryResult<usize> {
-    PlacesRepository::new(connection)
-        .insert_multiples(places)
+    PlacesRepository::new(connection).insert_multiples(places)
 }
-

@@ -1,4 +1,5 @@
 use diesel::mysql::MysqlConnection;
+use diesel::prelude::*;
 use diesel::r2d2::ConnectionManager;
 use rocket::http::Status;
 use rocket::request::{self, FromRequest};
@@ -32,4 +33,9 @@ impl Deref for DBConnectionMysql {
     fn deref(&self) -> &Self::Target {
         &self.0
     }
+}
+
+//For testing
+pub fn create_connexion(url: &str) -> MysqlConnection {
+    MysqlConnection::establish(url).expect("Expect url database")
 }

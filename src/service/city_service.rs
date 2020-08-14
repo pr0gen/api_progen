@@ -1,6 +1,6 @@
-use crate::database::dto::city::CitiesRepository;
 use crate::database::dto::city::City;
 use crate::database::infra::repository::Repository;
+use crate::database::repository::city_repository::CitiesRepository;
 use diesel::mysql::MysqlConnection;
 
 pub fn select(connection: &MysqlConnection) -> Vec<City> {

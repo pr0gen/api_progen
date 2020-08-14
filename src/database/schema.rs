@@ -26,7 +26,27 @@ table! {
     }
 }
 
+table! {
+    role (id) {
+        id -> Integer,
+        name -> Varchar,
+    }
+}
+
+table! {
+    user (id) {
+        id -> Integer,
+        name -> Varchar,
+        password -> Varchar,
+        token -> Varchar,
+        role_id -> Integer,
+        created_at -> Timestamp,
+        updated_at -> Timestamp,
+    }
+}
+
 joinable!(city -> country (country_id));
 joinable!(place -> city (city_id));
+joinable!(user -> role (role_id));
 
-allow_tables_to_appear_in_same_query!(city, country, place,);
+allow_tables_to_appear_in_same_query!(city, country, place, role, user,);
