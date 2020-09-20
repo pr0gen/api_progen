@@ -7,10 +7,10 @@ use crate::database::infra::db_pool::DBConnectionMysql;
 use crate::service::authentication_service;
 
 #[post("/register", format = "application/json", data = "<user>")]
-pub fn register(connection: DBConnectionMysql, user: Json<JsonUser>) -> String {
+pub fn register(connection: DBConnectionMysql, user: Json<JsonUser>) -> Json<User> {
     let user = user.0;
     let user: User = as_user(user.name, user.password, user.role_id);
-    authentication_service::register(&*connection, &user).unwrap()
+    Json(authentication_service::register(&*connection, &user).unwrap())
 }
 
 #[post("/", format = "application/json", data = "<user>")]
@@ -40,3 +40,6 @@ pub struct JsonUser {
     token: String,
     role_id: i32,
 }
+
+
+

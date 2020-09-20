@@ -8,8 +8,9 @@ use crate::database::dto;
 use crate::database::dto::user::User;
 use crate::database::infra::repository::Repository;
 use crate::database::repository::user_repository::UsersRepository;
+use crate::controller::APIProgenError;
 
-pub fn register(connection: &MysqlConnection, user: &User) -> Result<String, Error> {
+pub fn register(connection: &MysqlConnection, user: &User) -> Result<User, APIProgenError> {
     let hashed_user = User::new(
         *user.get_id(),
         user.get_name().clone(),
@@ -23,13 +24,13 @@ pub fn register(connection: &MysqlConnection, user: &User) -> Result<String, Err
     let repository = UsersRepository::new(connection);
     let result = match repository.exists(user.get_name()) {
         Ok(false) => repository.insert(&hashed_user),
-        Ok(true) => return Ok(String::from("Already exists")),
-        Err(e) => return Err(e),
+        Ok(true) => return Err(APIProgenError::RegisterError(String::from("Already exists"))),
+        Err(_) => return Err(APIProgenError::RegisterError(String::from("Failed to parse user"))),
     };
 
     match result {
-        Ok(_) => Ok(String::from("Successfuly register user")),
-        Err(e) => Err(e),
+        Ok(_) => Ok(hashed_user.get_user_without_password()),
+        Err(_) => Err(APIProgenError::RegisterError(String::from("Failed to save user"))),
     }
 }
 
@@ -99,3 +100,5 @@ fn should_generate_string() {
 fn config<'a>() -> Config<'a> {
     Config::default()
 }
+
+
