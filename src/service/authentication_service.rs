@@ -101,15 +101,3 @@ fn config<'a>() -> Config<'a> {
     Config::default()
 }
 
-
-pub fn foisdeux() -> String {
-  unimplemented!();
-}
-
-
-#[test]
-fn shpoukd_test() {
-       foisdeux();
-}
-
-
