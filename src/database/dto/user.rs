@@ -107,6 +107,18 @@ impl User {
     pub fn get_created_at(&self) -> &NaiveDateTime {
         &self.created_at
     }
+
+    pub fn get_user_without_password(&self) -> User { 
+        User {
+            id : self.id,
+            name: self.name.clone(),
+            password: String::from("hidden"),
+            token: self.token.clone(),
+            role_id: self.role_id,
+            created_at: self.created_at,
+            updated_at: self.updated_at,
+        }
+    }
 }
 
 impl InsertableUser {
@@ -121,3 +133,5 @@ impl InsertableUser {
         }
     }
 }
+
+

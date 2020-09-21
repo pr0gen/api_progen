@@ -7,10 +7,13 @@ use crate::database::infra::db_pool::DBConnectionMysql;
 use crate::service::authentication_service;
 
 #[post("/register", format = "application/json", data = "<user>")]
-pub fn register(connection: DBConnectionMysql, user: Json<JsonUser>) -> String {
+pub fn register(connection: DBConnectionMysql, user: Json<JsonUser>) -> Json<(User, String)> {
     let user = user.0;
     let user: User = as_user(user.name, user.password, user.role_id);
-    authentication_service::register(&*connection, &user).unwrap()
+    match authentication_service::register(&*connection, &user) {
+        Ok(registered_user) => Json((registered_user, String::from(""))),
+        Err(e) => Json((user, e.message())),
+    }
 }
 
 #[post("/", format = "application/json", data = "<user>")]
@@ -22,7 +25,7 @@ pub fn login(connection: DBConnectionMysql, user: Json<JsonUser>) -> String {
     }
     let user: User = as_user(user.name, user.password, user.role_id);
     authentication_service::login(&*connection, &user)
-        .unwrap_or_else(|_| String::from("Failed to check in user"))
+        .unwrap_or_else(|e| e.message())
 }
 
 fn check_token(connection: DBConnectionMysql, token: &str) -> String {
@@ -40,3 +43,4 @@ pub struct JsonUser {
     token: String,
     role_id: i32,
 }
+
