@@ -34,7 +34,7 @@ pub fn register(connection: &MysqlConnection, user: &User) -> Result<User, APIPr
     }
 }
 
-pub fn login(connection: &MysqlConnection, user_log: &User) -> Result<String, String> {
+pub fn login(connection: &MysqlConnection, user_log: &User) -> Result<String, APIProgenError> {
     let user_db = UsersRepository::new(connection).select_by_name(user_log.get_name());
 
     match user_db.get(0) {
@@ -42,9 +42,9 @@ pub fn login(connection: &MysqlConnection, user_log: &User) -> Result<String, St
             if verify_password(user.get_password(), user_log.get_password()) {
                 return Ok(generate_token());
             }
-            Err(String::from("Failed to verify password"))
+            Err(APIProgenError::LoginError(String::from("Failed to verify password")))
         }
-        None => Err(String::from("User not found")),
+        None => Err(APIProgenError::LoginError(String::from("User not found"))),
     }
 }
 
@@ -99,6 +99,17 @@ fn should_generate_string() {
 
 fn config<'a>() -> Config<'a> {
     Config::default()
+}
+
+
+pub fn foisdeux() -> String {
+  unimplemented!();
+}
+
+
+#[test]
+fn shpoukd_test() {
+       foisdeux();
 }
 
 
